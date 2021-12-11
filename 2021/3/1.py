@@ -1,13 +1,10 @@
-f = open('input','r')
-content = f.readlines()
-l = [s.replace("\n", "") for s in content]
+from collections import Counter
 
-# 010
-# 110
-# 001
+with open('input','r') as f:
+    l = list(map(str.strip, f.readlines()))
 
-for i in l:
-    for j in range(len(i)):
-        print(i[j], end="")
-    
+gamma = int("".join([Counter(x).most_common()[-1][0][0] for x in list(zip(*l))]), 2)
+epsilon = int(len(l[0])*'1', 2) - gamma
+
+print(gamma*epsilon)
 
