@@ -999,33 +999,56 @@ nums = '''100100110110
 000111110010
 111100110011'''.split('\n')
 
-hits = []
-zos = {'zeroes': 0, 'ones': 0}
-def recordHit(pos, res):
-    zos_copy = zos.copy()
-    hits.append(zos_copy)
-    hit = hits[pos]
-    if res == '0':
-        hit['zeroes']+=1
-    elif res == '1':
-        hit['ones']+=1
+def calculateGamaEpsilon(arr):
+    hits = []
+    zos = {'zeroes': 0, 'ones': 0}
+    def recordHit(pos, res):
+        zos_copy = zos.copy()
+        hits.append(zos_copy)
+        hit = hits[pos]
+        if res == '0':
+            hit['zeroes']+=1
+        elif res == '1':
+            hit['ones']+=1
+        else:
+            print('error')
+
+    for num in arr:
+        for i in range(len(num)):
+            recordHit(i, num[i])
+
+    gamma = ''
+    epsilon = ''
+    for hit in hits:
+        if hit['ones'] > hit['zeroes']:
+            gamma+='1'
+            epsilon+='0'
+        elif hit['zeroes'] > hit['ones']:
+            gamma+='0'
+            epsilon+='1'
+        else:
+            gamma+='1'
+            epsilon+='0'
+    return [gamma, epsilon]
+
+def rating(arr, kind, pos = 0):
+    gamma, epsilon = calculateGamaEpsilon(arr)
+    if kind == 'o':
+        val = gamma[pos]
     else:
-        print('error')
+        val = epsilon[pos]
 
-for num in nums:
-    for i in range(len(num)):
-        recordHit(i, num[i])
+    filtered = [num for num in arr if num[pos] == val]
+    
+    if len(filtered) == 1:
+        return filtered[0]
+    elif len(filtered) == 0:
+        return 'error'
+    else:
+        return rating(filtered, kind, pos+1)
 
-gamma = ''
-epsilon = ''
-
-for hit in hits:
-    if hit['ones'] > hit['zeroes']:
-        gamma+='1'
-        epsilon+='0'
-    elif hit['zeroes'] > hit['ones']:
-        gamma+='0'
-        epsilon+='1'
-
-
-print(int(gamma, 2) * int(epsilon, 2))
+ocr = rating(nums, 'o')
+scr = rating(nums, 'c')
+print(ocr)
+print(scr)
+print(int(ocr, 2) * int(scr, 2))
