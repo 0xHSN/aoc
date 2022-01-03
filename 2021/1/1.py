@@ -1,7 +1,6 @@
 f = open('input','r')
 content = f.readlines()
 l = [s.replace("\n", "") for s in content]
-
 count = 0
 c = 0
 
